@@ -1,12 +1,13 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Project.Repository.Data.Contexts;
 
 namespace Project.APIs
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,21 @@ namespace Project.APIs
             });
 
             var app = builder.Build();
+
+            using var scope = app.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            var context = services.GetRequiredService<AppDbContext>();
+            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+            try 
+            {
+                await context.Database.MigrateAsync();
+            } 
+            catch (Exception ex)
+            {
+                var logger = loggerFactory.CreateLogger<Program>();
+                logger.LogError(ex, "There Are Proplems During Apply Migrations !");
+            }
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
