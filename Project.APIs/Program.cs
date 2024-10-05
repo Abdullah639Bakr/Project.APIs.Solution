@@ -22,7 +22,7 @@ namespace Project.APIs
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+             
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
