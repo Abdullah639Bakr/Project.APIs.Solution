@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Project.Repository.Data;
 using Project.Repository.Data.Contexts;
 
 namespace Project.APIs
@@ -30,7 +31,10 @@ namespace Project.APIs
             var loggerFactory = services.GetRequiredService<ILoggerFactory>();
             try 
             {
+                //// Create Database
                 await context.Database.MigrateAsync();
+                //// SeedingData
+                await StoreDbContextSeed.SeedAsync(context);
             } 
             catch (Exception ex)
             {
