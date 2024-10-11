@@ -1,8 +1,14 @@
 
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Project.Core;
+using Project.Core.Mapping.Products;
+using Project.Core.Services.Contract;
+using Project.Repository;
 using Project.Repository.Data;
 using Project.Repository.Data.Contexts;
+using Project.Service.Services.Products;
 
 namespace Project.APIs
 {
@@ -23,7 +29,11 @@ namespace Project.APIs
                 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            var app = builder.Build();
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddAutoMapper(m => m.AddProfile(new ProductProfile()));
+
+           var app = builder.Build();
 
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
