@@ -34,7 +34,7 @@ namespace Project.APIs
             builder.Services.AddAutoMapper(m => m.AddProfile(new ProductProfile()));
 
            var app = builder.Build();
-
+             
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
             var context = services.GetRequiredService<AppDbContext>();
