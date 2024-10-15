@@ -3,6 +3,7 @@ using Project.Core;
 using Project.Core.Dtos.Products;
 using Project.Core.Entities;
 using Project.Core.Services.Contract;
+using Project.Core.Specifications.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,8 +26,26 @@ namespace Project.Service.Services.Products
 
         public async Task<IEnumerable<ProductDto>> GetAllProductSAsync()
         {
-            return _mapper.Map<IEnumerable<ProductDto>>(await _unitOfWork.Repository<Product, int>().GetAllAsync()) ;
+
+            var spec = new ProductSpecifications();
+            var products = await _unitOfWork.Repository<Product, int>().GetAllWithSpecAsync(spec);
+            var mappedProducts = _mapper.Map<IEnumerable<ProductDto>>(products);
+
+            return mappedProducts;
+            //return _mapper.Map<IEnumerable<ProductDto>>(await _unitOfWork.Repository<Product, int>().GetAllAsync()) ;
         }
+
+        public async Task<ProductDto> GetProductById(int id)
+        {
+
+            var spec = new ProductSpecifications(id);
+            return _mapper.Map<ProductDto>(await _unitOfWork.Repository<Product, int>().GetWithSpecAsync(spec));
+
+            //var product = await _unitOfWork.Repository<Product, int>().GetAsync(id);
+            //var productMapper = _mapper.Map<ProductDto>(product);
+            //return productMapper;
+        }
+
         public async Task<IEnumerable<TypeBrandDto>> GetAllTypesAsync()
         {
              return _mapper.Map<IEnumerable<TypeBrandDto>>(await _unitOfWork.Repository<ProductType,int>().GetAllAsync());
@@ -41,12 +60,7 @@ namespace Project.Service.Services.Products
            //return _mapper.Map<IEnumerable<TypeBrandDto>>(await _unitOfWork.Repository<ProductBrand, int>().GetAllAsync());
         }
 
-        public async Task<ProductDto> GetProductById(int id)
-        {
-            var product =await _unitOfWork.Repository<Product, int>().GetAsync(id);
-            var productMapper = _mapper.Map<ProductDto>(product);
-            return productMapper;
-        }
+      
 
 
 

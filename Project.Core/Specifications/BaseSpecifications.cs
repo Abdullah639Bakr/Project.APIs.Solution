@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Project.Core.Specifications
 {
-    internal class BaseSpecifications<TEntity, TKey> : ISpecifications<TEntity, TKey> where TEntity : BaseEntity<TKey>
+    public class BaseSpecifications<TEntity, TKey> : ISpecifications<TEntity, TKey> where TEntity : BaseEntity<TKey>
     {
         public Expression<Func<TEntity, bool>> Criteria { get; set; } = null;
         public List<Expression<Func<TEntity, object>>> Includes { get; set ; } = new List<Expression<Func<TEntity, object>>> ();
