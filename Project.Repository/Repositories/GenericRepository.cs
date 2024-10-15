@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project.Core.Entities;
 using Project.Core.Repositories.Contract;
+using Project.Core.Specifications;
 using Project.Repository.Data.Contexts;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,6 @@ namespace Project.Repository.Repositories
             }
             return await _context.Set<TEntity>().ToListAsync();
         }
-
         public async Task<TEntity> GetAsync(TKey id)
         {
             if (typeof(TEntity) == typeof(Product))
@@ -40,6 +40,7 @@ namespace Project.Repository.Repositories
             return await _context.Set<TEntity>().FindAsync(id);
         }
         public async Task AddAsync(TEntity entity)
+
         {
             await _context.AddAsync(entity);
         }
@@ -53,8 +54,20 @@ namespace Project.Repository.Repositories
             _context.Remove(entity);
         }
 
-       
+        public async Task<IEnumerable<TEntity>> GetAllWithSpecAsync(ISpecifications<TEntity, TKey> spec)
+        {
+           return await ApplySpecifications(spec).ToListAsync();
+        }
 
-        
+        public async Task<TEntity> GetWithSpecAsync(ISpecifications<TEntity, TKey> spec)
+        {
+            return await  ApplySpecifications(spec).FirstOrDefaultAsync();
+
+        }
+
+        private IQueryable<TEntity> ApplySpecifications(ISpecifications<TEntity, TKey> spec) 
+        {
+            return SpecificationsEvaluator<TEntity, TKey>.QetQuery(_context.Set<TEntity>(), spec);
+        }
     }
 }
