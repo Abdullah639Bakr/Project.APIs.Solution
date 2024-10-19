@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Project.Core.Dtos.Products;
+using Project.Core.Helper;
 using Project.Core.Services.Contract;
+using Project.Core.Specifications.Products;
 
 namespace Project.APIs.Controllers
 {
@@ -17,9 +20,9 @@ namespace Project.APIs.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts([FromQuery] string? sort , [FromQuery] int? brandId, [FromQuery] int? typeId, [FromQuery] int? pageSize=5, [FromQuery] int? pageIndex=1)
+        public async Task<IActionResult> GetAllProducts([FromQuery] ProductSpecPrames productSpec)
         {
-            var result = await _productService.GetAllProductSAsync(sort , brandId,typeId,pageSize,pageIndex);
+            var result = await _productService.GetAllProductSAsync(productSpec);
             return Ok(result);
         }
 

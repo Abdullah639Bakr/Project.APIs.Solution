@@ -2,6 +2,7 @@
 using Project.Core;
 using Project.Core.Dtos.Products;
 using Project.Core.Entities;
+using Project.Core.Helper;
 using Project.Core.Services.Contract;
 using Project.Core.Specifications.Products;
 using System;
@@ -24,14 +25,15 @@ namespace Project.Service.Services.Products
         }
 
 
-        public async Task<IEnumerable<ProductDto>> GetAllProductSAsync(string? sort, int? brandId, int? typeId, int? pageSize, int? pageIndex)
+        public async Task<PaginationResponse<ProductDto>> GetAllProductSAsync(ProductSpecPrames productSpec)
         {
 
-            var spec = new ProductSpecifications(sort, brandId, typeId , pageSize.Value , pageIndex.Value);
+            var spec = new ProductSpecifications(productSpec);
             var products = await _unitOfWork.Repository<Product, int>().GetAllWithSpecAsync(spec);
             var mappedProducts = _mapper.Map<IEnumerable<ProductDto>>(products);
-
-            return mappedProducts;
+            var countSpec = new ProductWithCountSpecifications(productSpec);
+            var count = await _unitOfWork.Repository<Product, int>().GetCountAsync(countSpec);
+            return new PaginationResponse<ProductDto>(productSpec.PageSize, productSpec.PageIndex, count, mappedProducts);
             //return _mapper.Map<IEnumerable<ProductDto>>(await _unitOfWork.Repository<Product, int>().GetAllAsync()) ;
         }
 

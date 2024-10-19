@@ -16,6 +16,7 @@ namespace Project.Core.Repositories.Contract
         Task<TEntity> GetAsync(Tkey id);
         Task<IEnumerable<TEntity>> GetAllWithSpecAsync( ISpecifications<TEntity,Tkey> spec );
         Task<TEntity> GetWithSpecAsync(ISpecifications<TEntity, Tkey> spec);
+        Task<int> GetCountAsync(ISpecifications<TEntity, Tkey> spec);
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);
