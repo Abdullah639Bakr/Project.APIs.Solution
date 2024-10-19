@@ -16,6 +16,8 @@ namespace Project.Core.Specifications.Products
 
         public ProductSpecifications(ProductSpecPrames productSpec) : base(
             p=>
+            (string.IsNullOrEmpty(productSpec.Search) || p.Name.ToLower().Contains(productSpec.Search))
+            &&
             ( !productSpec.BrandId.HasValue || productSpec.BrandId == p.BrandId)
             &&
             ( !productSpec.TypeId.HasValue || productSpec.TypeId == p.TypeId)
