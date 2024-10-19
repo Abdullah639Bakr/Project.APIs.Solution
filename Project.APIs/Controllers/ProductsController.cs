@@ -17,9 +17,9 @@ namespace Project.APIs.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts([FromQuery] string? sort , [FromQuery] int? brandId, [FromQuery] int? typeId)
+        public async Task<IActionResult> GetAllProducts([FromQuery] string? sort , [FromQuery] int? brandId, [FromQuery] int? typeId, [FromQuery] int? pageSize=5, [FromQuery] int? pageIndex=1)
         {
-            var result = await _productService.GetAllProductSAsync(sort , brandId,typeId);
+            var result = await _productService.GetAllProductSAsync(sort , brandId,typeId,pageSize,pageIndex);
             return Ok(result);
         }
 

@@ -30,7 +30,12 @@ namespace Project.Repository
                 query = query.OrderByDescending(spec.OrderByDescending);
             }
 
-                query = spec.Includes.Aggregate(query, (currentQuery, IncludeExpression) => currentQuery.Include(IncludeExpression));
+            if (spec.IsPaginationEnabled) 
+            {
+                query = query.Skip(spec.Skip).Take(spec.Take);
+            }
+
+            query = spec.Includes.Aggregate(query, (currentQuery, IncludeExpression) => currentQuery.Include(IncludeExpression));
 
             return query;
         }

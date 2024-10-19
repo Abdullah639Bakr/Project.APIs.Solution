@@ -24,10 +24,10 @@ namespace Project.Service.Services.Products
         }
 
 
-        public async Task<IEnumerable<ProductDto>> GetAllProductSAsync(string? sort, int? brandId, int? typeId)
+        public async Task<IEnumerable<ProductDto>> GetAllProductSAsync(string? sort, int? brandId, int? typeId, int? pageSize, int? pageIndex)
         {
 
-            var spec = new ProductSpecifications(sort, brandId, typeId);
+            var spec = new ProductSpecifications(sort, brandId, typeId , pageSize.Value , pageIndex.Value);
             var products = await _unitOfWork.Repository<Product, int>().GetAllWithSpecAsync(spec);
             var mappedProducts = _mapper.Map<IEnumerable<ProductDto>>(products);
 
