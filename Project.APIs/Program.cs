@@ -31,7 +31,7 @@ namespace Project.APIs
 
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddAutoMapper(m => m.AddProfile(new ProductProfile()));
+            builder.Services.AddAutoMapper(m => m.AddProfile(new ProductProfile(builder.Configuration)));
 
            var app = builder.Build();
              
@@ -59,6 +59,8 @@ namespace Project.APIs
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseStaticFiles();
              
             app.UseHttpsRedirection();
 
