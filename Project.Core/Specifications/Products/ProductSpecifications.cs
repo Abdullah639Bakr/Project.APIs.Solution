@@ -14,7 +14,12 @@ namespace Project.Core.Specifications.Products
             ApplyIncludes();
         }
 
-        public ProductSpecifications(string? sort)
+        public ProductSpecifications(string? sort , int? brandId, int? typeId) : base(
+            p=>
+            ( !brandId.HasValue || brandId == p.BrandId)
+            &&
+            ( !typeId.HasValue || typeId == p.TypeId)
+            )
         {
             if (!string.IsNullOrEmpty(sort))
             {
