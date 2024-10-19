@@ -20,7 +20,17 @@ namespace Project.Repository
                 query = query.Where(spec.Criteria);
             }
 
-            query = spec.Includes.Aggregate(query, (currentQuery, IncludeExpression) => currentQuery.Include(IncludeExpression));
+            if (spec.OrderBy is not null) 
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
+
+            if (spec.OrderByDescending is not null) 
+            {
+                query = query.OrderByDescending(spec.OrderByDescending);
+            }
+
+                query = spec.Includes.Aggregate(query, (currentQuery, IncludeExpression) => currentQuery.Include(IncludeExpression));
 
             return query;
         }

@@ -9,7 +9,7 @@ namespace Project.Core.Services.Contract
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductDto>> GetAllProductSAsync();
+        Task<IEnumerable<ProductDto>> GetAllProductSAsync(string? sort);
         Task<IEnumerable<TypeBrandDto>> GetAllTypesAsync();
         Task<IEnumerable<TypeBrandDto>> GetAllBrandsAsync();
         Task<ProductDto> GetProductById(int id);
