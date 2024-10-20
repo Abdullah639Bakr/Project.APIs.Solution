@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Project.APIs.Errors;
 using Project.Repository.Data.Contexts;
 
 namespace Project.APIs.Controllers
@@ -19,7 +20,7 @@ namespace Project.APIs.Controllers
         public async Task<IActionResult> GetNotFoundRequestError()
         {
             var brand = await _context.Brands.FindAsync(100);
-            if (brand is null) return NotFound();
+            if (brand is null) return NotFound(new ApiErrorResponse(404,"brand with id : 100 is not found"));
             return Ok(brand);
         }
 
@@ -34,7 +35,7 @@ namespace Project.APIs.Controllers
         [HttpGet("badrequest")]
         public async Task<IActionResult> GetBadRequestError()
         {
-            return BadRequest();
+            return BadRequest(new ApiErrorResponse(404));
         }
 
         [HttpGet("badrequest/{id}")]
@@ -46,7 +47,7 @@ namespace Project.APIs.Controllers
         [HttpGet("unauthorized")]
         public async Task<IActionResult> GetUnauthorizedError(int id)
         {
-            return Unauthorized();
+            return Unauthorized(new ApiErrorResponse(401));
         }
 
 
