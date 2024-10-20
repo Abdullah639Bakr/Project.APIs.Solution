@@ -1,7 +1,10 @@
 
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Project.APIs.Errors;
 using Project.Core;
 using Project.Core.Mapping.Products;
 using Project.Core.Services.Contract;
@@ -32,6 +35,22 @@ namespace Project.APIs
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddAutoMapper(m => m.AddProfile(new ProductProfile(builder.Configuration)));
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = (actionContext) =>
+                {
+                    var errors = actionContext.ModelState.Where(p => p.Value.Errors.Count() > 0)
+                                             .SelectMany(p => p.Value.Errors)
+                                             .Select(E => E.ErrorMessage)
+                                             .ToArray();
+                    var response = new ApiValidationErrorResponse()
+                    {
+                        Errors = errors
+
+                    };
+                    return new BadRequestObjectResult(response);
+                };
+            });
 
            var app = builder.Build();
              
