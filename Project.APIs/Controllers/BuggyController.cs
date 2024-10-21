@@ -5,9 +5,8 @@ using Project.Repository.Data.Contexts;
 
 namespace Project.APIs.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BuggyController : ControllerBase
+    
+    public class BuggyController : BaseApiController
     {
         private readonly AppDbContext _context;
 
