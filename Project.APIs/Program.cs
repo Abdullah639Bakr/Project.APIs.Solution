@@ -1,7 +1,11 @@
 
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Project.APIs.Errors;
+using Project.APIs.Middlewares;
 using Project.Core;
 using Project.Core.Mapping.Products;
 using Project.Core.Services.Contract;
@@ -9,6 +13,7 @@ using Project.Repository;
 using Project.Repository.Data;
 using Project.Repository.Data.Contexts;
 using Project.Service.Services.Products;
+using Project.APIs.Helper;
 
 namespace Project.APIs
 {
@@ -18,57 +23,10 @@ namespace Project.APIs
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-            builder.Services.AddDbContext<AppDbContext>(option =>
-            {
-                option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
-
-            builder.Services.AddScoped<IProductService, ProductService>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddAutoMapper(m => m.AddProfile(new ProductProfile(builder.Configuration)));
-
-           var app = builder.Build();
-             
-            using var scope = app.Services.CreateScope();
-            var services = scope.ServiceProvider;
-            var context = services.GetRequiredService<AppDbContext>();
-            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
-            try 
-            {
-                //// Create Database
-                await context.Database.MigrateAsync();
-                //// SeedingData
-                await StoreDbContextSeed.SeedAsync(context);
-            } 
-            catch (Exception ex)
-            {
-                var logger = loggerFactory.CreateLogger<Program>();
-                logger.LogError(ex, "There Are Proplems During Apply Migrations !");
-            }
-
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseStaticFiles();
-             
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
-
+            // Add services to the container...
+            builder.Services.AddDependency(builder.Configuration);
+            var app = builder.Build();
+            await app.ConfigureMeddlewareAsync();
             app.Run();
         }
     }
