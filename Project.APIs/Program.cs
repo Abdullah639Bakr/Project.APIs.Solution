@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Project.APIs.Errors;
+using Project.APIs.Middlewares;
 using Project.Core;
 using Project.Core.Mapping.Products;
 using Project.Core.Services.Contract;
@@ -71,6 +72,7 @@ namespace Project.APIs
                 logger.LogError(ex, "There Are Proplems During Apply Migrations !");
             }
 
+            app.UseMiddleware<ExceptionMiddleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
