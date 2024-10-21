@@ -81,6 +81,8 @@ namespace Project.APIs
                 app.UseSwaggerUI();
             }
 
+            app.UseStatusCodePagesWithReExecute("/error/{0}");
+
             app.UseStaticFiles();
              
             app.UseHttpsRedirection();
