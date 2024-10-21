@@ -23,7 +23,7 @@ namespace Project.APIs
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container..
+            // Add services to the container...
             builder.Services.AddDependency(builder.Configuration);
             var app = builder.Build();
             await app.ConfigureMeddlewareAsync();
