@@ -12,6 +12,9 @@ using Project.Repository.Repositories;
 using StackExchange.Redis;
 using Project.Core.Mapping.Baskets;
 using Project.Service.Services.Cashes;
+using Project.Repository.Identity.Contexts;
+using Project.Core.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace Project.APIs.Helper
 {
@@ -26,6 +29,7 @@ namespace Project.APIs.Helper
             services.AddAutoMapperService(configuration);
             services.ConfigureInvalidModelStateResponseService();
             services.AddRedisService(configuration);
+            services.AddIdentityService();
 
             return services;
         }
@@ -48,6 +52,11 @@ namespace Project.APIs.Helper
             services.AddDbContext<AppDbContext>(option =>
             {
                 option.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddDbContext<StoreIdentityDbContext>(option =>
+            {
+                option.UseSqlServer(configuration.GetConnectionString("IdentityConnection"));
             });
             return services;
         }
@@ -102,6 +111,14 @@ namespace Project.APIs.Helper
             
             return services;
         }
+
+        private static IServiceCollection AddIdentityService(this IServiceCollection services)
+        {
+            services.AddIdentity<AppUser, IdentityRole>()
+                    .AddEntityFrameworkStores<StoreIdentityDbContext>();
+            return services;
+        }
+
 
     }
 }
