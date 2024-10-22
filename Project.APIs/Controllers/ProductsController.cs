@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Project.APIs.Attributes;
 using Project.APIs.Errors;
 using Project.Core.Dtos.Products;
 using Project.Core.Helper;
@@ -20,6 +21,7 @@ namespace Project.APIs.Controllers
 
         [ProducesResponseType(typeof(PaginationResponse<ProductDto>),StatusCodes.Status200OK)]
         [HttpGet]
+        [Cashed(100)]
         public async Task<ActionResult<PaginationResponse<ProductDto>>> GetAllProducts([FromQuery] ProductSpecPrames productSpec)
         {
             var result = await _productService.GetAllProductSAsync(productSpec);

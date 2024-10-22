@@ -11,6 +11,7 @@ using Project.Core.Repositories.Contract;
 using Project.Repository.Repositories;
 using StackExchange.Redis;
 using Project.Core.Mapping.Baskets;
+using Project.Service.Services.Cashes;
 
 namespace Project.APIs.Helper
 {
@@ -55,6 +56,7 @@ namespace Project.APIs.Helper
         {
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICasheService,CasheService>();
             services.AddScoped<IBasketRepository, BasketRepository>();
             return services;
         }
