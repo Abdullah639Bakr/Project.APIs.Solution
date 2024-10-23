@@ -15,6 +15,8 @@ using Project.Service.Services.Cashes;
 using Project.Repository.Identity.Contexts;
 using Project.Core.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Project.Service.Services.Tokens;
+using Project.Service.Services.Users;
 
 namespace Project.APIs.Helper
 {
@@ -66,6 +68,8 @@ namespace Project.APIs.Helper
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICasheService,CasheService>();
+            services.AddScoped<ITokenService,TokenService>();
+            services.AddScoped<IUserService,UserService>();
             services.AddScoped<IBasketRepository, BasketRepository>();
             return services;
         }
