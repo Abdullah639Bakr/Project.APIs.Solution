@@ -11,5 +11,6 @@ namespace Project.Core.Repositories.Contract
     {
         Task<UserDto>LoginAsync(LoginDto loginDto);
         Task<UserDto>RegisterAsync(RegisterDto registerDto);
+        Task<bool> CheckEmailExitsAsync(string email);
     }
 }
