@@ -76,6 +76,22 @@ namespace Project.APIs.Controllers
             return Ok(_mapper.Map<AddressDto>(user.Address));
           
         }
+        [HttpPost("UpdateCurrentUser")]
+        [Authorize]
+        public async Task<ActionResult<UserDto>> UpdateCurrentUser()
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (userEmail is null) return BadRequest(new ApiErrorResponse(StatusCodes.Status400BadRequest));
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user is null) return BadRequest(new ApiErrorResponse(StatusCodes.Status400BadRequest));
+            return Ok(new UserDto()
+            {
+
+                DisplayName = user.DisplayName,
+                Email = user.Email,
+                Token = await _tokenService.CreateTokenAsync(user, _userManager)
+            });
+        }
 
     }
 }
