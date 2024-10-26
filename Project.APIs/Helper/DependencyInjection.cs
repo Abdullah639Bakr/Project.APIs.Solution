@@ -20,6 +20,7 @@ using Project.Service.Services.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Project.Core.Mapping.Auth;
 
 namespace Project.APIs.Helper
 {
@@ -82,6 +83,7 @@ namespace Project.APIs.Helper
         {
             services.AddAutoMapper(m => m.AddProfile(new ProductProfile(configuration)));
             services.AddAutoMapper(m => m.AddProfile(new BasketProfile()));
+            services.AddAutoMapper(m => m.AddProfile(new AuthProfile()));
 
             return services;
         }

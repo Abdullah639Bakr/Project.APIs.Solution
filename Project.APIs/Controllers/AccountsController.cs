@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Project.APIs.Errors;
+using Project.APIs.Extensions;
 using Project.Core.Dtos.Auth;
 using Project.Core.Entities.Identity;
 using Project.Core.Repositories.Contract;
@@ -15,14 +18,17 @@ namespace Project.APIs.Controllers
         private readonly IUserService _userService;
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
+        private readonly IMapper _mapper;
 
         public AccountsController(IUserService userService , 
                                   UserManager<AppUser> userManager,
-                                  ITokenService tokenService)
+                                  ITokenService tokenService,
+                                  IMapper mapper)
         {
             _userService = userService;
             _userManager = userManager;
             _tokenService = tokenService;
+            _mapper = mapper;
         }
 
         [HttpPost("login")]
@@ -42,6 +48,7 @@ namespace Project.APIs.Controllers
         }
 
         [HttpGet("GetCurrentUser")]
+        [Authorize]
         public async Task<ActionResult<UserDto>> GetCurrentUser() 
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
@@ -55,6 +62,19 @@ namespace Project.APIs.Controllers
                 Email = user.Email,
                 Token = await _tokenService.CreateTokenAsync(user, _userManager)
             });
+        }
+
+
+        [HttpGet("Address")]
+        [Authorize]
+
+        public async Task<ActionResult<UserDto>> GetCurrentUserAddress()
+        {
+            
+            var user = await _userManager.FindByEmailWithAddressAsync(User);
+            if (user is null) return BadRequest(new ApiErrorResponse(StatusCodes.Status400BadRequest));
+            return Ok(_mapper.Map<AddressDto>(user.Address));
+          
         }
 
     }
