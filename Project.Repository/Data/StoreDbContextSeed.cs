@@ -1,4 +1,5 @@
 ﻿using Project.Core.Entities;
+using Project.Core.Entities.Order;
 using Project.Repository.Data.Contexts;
 using System;
 using System.Collections.Generic;
@@ -64,6 +65,23 @@ namespace Project.Repository.Data
                 if (products is not null && products.Count > 0)
                 {
                     await _context.Products.AddRangeAsync(products);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            if (_context.DeliveryMethods.Count() == 0)
+            {
+                //  (1) Read Data From Json File
+                var deliveryData = File.ReadAllText(@"..\Project.Repository\Data\DataSeed\delivery.json");
+
+                //  (2) Convert Jason To List<T>
+                var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryData);
+
+
+                //  (3) Seed Data To Database
+                if (deliveryMethods is not null && deliveryMethods.Count > 0)
+                {
+                    await _context.DeliveryMethods.AddRangeAsync(deliveryMethods);
                     await _context.SaveChangesAsync();
                 }
             }
