@@ -54,6 +54,7 @@ namespace Project.APIs.Helper
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

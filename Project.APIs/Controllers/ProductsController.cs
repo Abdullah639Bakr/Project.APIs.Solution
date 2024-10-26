@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Project.APIs.Attributes;
 using Project.APIs.Errors;
@@ -22,6 +23,7 @@ namespace Project.APIs.Controllers
         [ProducesResponseType(typeof(PaginationResponse<ProductDto>),StatusCodes.Status200OK)]
         [HttpGet]
         [Cashed(100)]
+        [Authorize]
         public async Task<ActionResult<PaginationResponse<ProductDto>>> GetAllProducts([FromQuery] ProductSpecPrames productSpec)
         {
             var result = await _productService.GetAllProductSAsync(productSpec);
@@ -30,6 +32,8 @@ namespace Project.APIs.Controllers
 
         [ProducesResponseType(typeof(IEnumerable<TypeBrandDto>), StatusCodes.Status200OK)]
         [HttpGet("brand")]
+        [Authorize]
+
         public async Task<ActionResult<IEnumerable<TypeBrandDto>>> GetAllBrands()
         {
             var result = await _productService.GetAllBrandsAsync();
@@ -38,6 +42,8 @@ namespace Project.APIs.Controllers
 
         [ProducesResponseType(typeof(IEnumerable<TypeBrandDto>), StatusCodes.Status200OK)]
         [HttpGet("type")]
+        [Authorize]
+
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllTypes()
         {
             var result = await _productService.GetAllTypesAsync();
@@ -49,6 +55,7 @@ namespace Project.APIs.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetProductById(int? id)
         {
             if(id is null) return BadRequest(new ApiErrorResponse(400));

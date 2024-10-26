@@ -17,6 +17,9 @@ using Project.Core.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Project.Service.Services.Tokens;
 using Project.Service.Services.Users;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Project.APIs.Helper
 {
@@ -32,6 +35,7 @@ namespace Project.APIs.Helper
             services.ConfigureInvalidModelStateResponseService();
             services.AddRedisService(configuration);
             services.AddIdentityService();
+            services.AddAuthenticationService(configuration);
 
             return services;
         }
@@ -122,6 +126,30 @@ namespace Project.APIs.Helper
                     .AddEntityFrameworkStores<StoreIdentityDbContext>();
             return services;
         }
+
+        private static IServiceCollection AddAuthenticationService(this IServiceCollection services , IConfiguration configuration)
+        {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options => 
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = configuration["Jwt:Audience"],
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+
+                };
+            });
+            return services;
+        }
+
 
 
     }
